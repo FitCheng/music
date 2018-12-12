@@ -1,14 +1,16 @@
 <template>
-  <swiper :options="swiperOption" ref="mySwiper" v-if="showSwiper">
-    <!-- slides -->
-    <swiper-slide v-for="item of recommends" :key="item.id">
-      <a :href="item.linkUrl">
-        <img class="swiper-img" :src="item.picUrl" alt="">
-      </a>
-    </swiper-slide>
-    <!-- Optional controls -->
-    <div class="swiper-pagination" slot="pagination"></div>
-  </swiper>
+  <transition>
+    <swiper :options="swiperOption" ref="mySwiper" v-if="showSwiper">
+      <!-- slides -->
+      <swiper-slide v-for="item of recommends" :key="item.id">
+        <a :href="item.linkUrl">
+          <img class="swiper-img" :src="item.picUrl" alt="">
+        </a>
+      </swiper-slide>
+      <!-- Optional controls -->
+      <div class="swiper-pagination" slot="pagination"></div>
+    </swiper>
+  </transition>
 </template>
 
 <script>
@@ -25,12 +27,18 @@ export default {
       }
     }
   },
+  components: {
+  },
   props: {
-    recommends: Array
+    recommends: Array,
+    swiperShow: Boolean
   },
   computed: {
     showSwiper () {
       return this.recommends.length
+    },
+    showSwiper2 () {
+      return this.swiperShow
     }
   }
 }

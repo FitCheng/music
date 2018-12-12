@@ -1,19 +1,13 @@
 <template>
   <div class="tab">
-    <router-link tag="div"
-                 class="tab-item"
-                 to="/recommend">
+    <router-link tag="div" class="tab-item" to="/recommend">
       <span class="tab-link">推荐</span>
     </router-link>
-    <router-link tag="div"
-                 class="tab-item"
-                 to="/rank">
+    <router-link tag="div" class="tab-item" to="/rank">
       <span class="tab-link">排行榜
       </span>
     </router-link>
-    <router-link tag="div"
-                 class="tab-item"
-                 to="/search">
+    <router-link tag="div" class="tab-item" to="/search">
       <span class="tab-link">搜索</span>
     </router-link>
   </div>
@@ -26,6 +20,7 @@ export default {}
 <style>
 .tab {
   display: flex;
+  background-color: #000;
 }
 .tab-item {
   flex: 1;
@@ -33,11 +28,11 @@ export default {}
   height: 1.026rem;
   font-size: 0.437rem;
   line-height: 1.07rem;
-  color: rgba(0, 0, 0, 0.6);
-  border-bottom: 0.054rem solid #fff;
+  color: #aaa;
+  border-bottom: 0.054rem solid #000;
 }
 .router-link-active {
-  color: #31c27c;
-  border-bottom: 0.054rem solid #3bcfd6;
+  color: #ffcd32;
+  border-bottom: 0.054rem solid #ffcd32;
 }
 </style>

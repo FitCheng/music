@@ -6,20 +6,30 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api/getDiscLists': {
-        target: 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg',
+        target:
+          'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg',
         bypass: function (req, res, proxyOptons) {
-          req.headers.referer = 'https://c.y.qq.com';
-          req.headers.host = 'c.y.qq.com';
+          req.headers.referer = 'https://c.y.qq.com'
+          req.headers.host = 'c.y.qq.com'
         },
-          pathRewrite: {
-            '^/api/getDiscLists': ''
-          }
+        pathRewrite: {
+          '^/api/getDiscLists': ''
+        }
+      },
+      '/api/getList': {
+        target: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg',
+        bypass: function (req, res, proxyOptons) {
+          req.headers.referer = 'https://c.y.qq.com'
+          req.headers.host = 'c.y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/getList': ''
+        }
       }
     },
 
