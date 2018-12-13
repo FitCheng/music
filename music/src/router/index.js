@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Rank from '@/components/rank/rank'
+import Singer from '@/components/singer/singer'
 import Search from '@/components/search/search'
 import Recommend from '@/components/recommend/recommend'
 
@@ -20,6 +21,11 @@ export default new Router({
       path: '/search',
       name: 'Search',
       component: Search
+    },
+    {
+      path: '/singer',
+      name: 'Singer',
+      component: Singer
     },
     {
       path: '/recommend',
