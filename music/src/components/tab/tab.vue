@@ -29,9 +29,9 @@ export default {}
 .tab-item {
   flex: 1;
   text-align: center;
-  height: 1.026rem;
+  height: 0.916rem;
   font-size: 0.437rem;
-  line-height: 1.07rem;
+  line-height: 1rem;
   color: #aaa;
   border-bottom: 0.054rem solid #000;
 }
