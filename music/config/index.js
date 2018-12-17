@@ -30,6 +30,16 @@ module.exports = {
         pathRewrite: {
           '^/api/getList': ''
         }
+      },
+      '/api/getSingerDetail': {
+        target: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
+        bypass: function (req, res, proxyOptons) {
+          req.headers.referer = 'https://c.y.qq.com'
+          req.headers.host = 'c.y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/getSingerDetail': ''
+        }
       }
     },
 

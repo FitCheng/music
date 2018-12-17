@@ -1,6 +1,7 @@
 import { commonParams, options } from './config'
 import axios from 'axios'
-import jsonp from './jsonp'
+import { jsonp } from './jsonp'
+import originJsonp from 'jsonp'
 
 export function getDiscList () {
   const url = 'api/getList'
@@ -44,4 +45,21 @@ export function getSingerList () {
     }
   }
   return jsonp(url, options, data)
+}
+
+export function getSingerDetail (id) {
+  const url =
+    'api/getSingerDetail?g_tk=5381&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&order=listen&begin=0&num=30&songstatus=1' +
+    '&' +
+    'singermid=' +
+    id
+  return new Promise((resolve, reject) => {
+    originJsonp(url, options, (err, data) => {
+      if (!err) {
+        resolve(data)
+      } else {
+        reject(err)
+      }
+    })
+  })
 }

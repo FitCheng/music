@@ -9,6 +9,7 @@ import './assets/api/rem'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import VueLazyLoad from 'vue-lazyload'
 import 'swiper/dist/css/swiper.css'
+import store from './store'
 
 Vue.use(VueAwesomeSwiper /* { default global options } */)
 Vue.use(VueLazyLoad, {
@@ -24,6 +25,7 @@ fastClick.attach(document.body)
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

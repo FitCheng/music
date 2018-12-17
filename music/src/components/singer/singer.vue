@@ -4,13 +4,14 @@
       <div>
         <div v-for="item in singerList" :key="item.id" ref="titleList">
           <h1 class="singer-title">{{item.title}}</h1>
-          <div class="singer-box" v-for="item in item.items" :key="item.id">
+          <div @click="goDetail(item)" class="singer-box" v-for="item in item.items" :key="item.id">
             <img class="singer-img" v-lazy="item.imgUrl" alt="">
             <p class="singer-name">{{`${item.name}(${item.country})`}}</p>
           </div>
         </div>
         <loading class="loading" v-show="!singerList"></loading>
       </div>
+      <h1 class="singer-title-fixed" v-show="fixedTitle" ref="diffFixed">{{fixedTitle}}</h1>
     </scroll>
     <div class="list-shortcut" @touchstart="onTouchStart" @touchmove.stop.prevent="onTouchMove">
       <ul>
@@ -19,6 +20,7 @@
         </li>
       </ul>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -29,10 +31,12 @@ import { pinyin } from 'api/change.js'
 import { ERR_OK } from 'api/config.js'
 import Loading from 'base/loading/loading'
 import { getData } from 'api/dom.js'
+import { mapMutations } from 'vuex'
 
 const HOT_NAME = '热门'
 const HOT_SINGER_LEN = 10
 const LETTER_HIGHT = 39
+const DIFF = 76
 
 export default {
   name: 'singer',
@@ -42,7 +46,8 @@ export default {
       singerList: [],
       moveObj: {},
       scrollY: -1,
-      currentIndex: 0
+      currentIndex: 0,
+      diff: -1
     }
   },
   created () {
@@ -54,6 +59,12 @@ export default {
     this._getSingerList()
   },
   methods: {
+    goDetail (item) {
+      this.$router.push({
+        path: `/singer/${item.id}`
+      })
+      this.setSinger(item)
+    },
     _getSingerList () {
       getSingerList().then(res => {
         if (res.code === ERR_OK) {
@@ -88,7 +99,8 @@ export default {
           map.hot.items.push({
             name: item.singer_name,
             imgUrl: item.singer_pic,
-            country: item.country
+            country: item.country,
+            id: item.singer_mid
           })
         }
         const key = pinyin.getFullChars(item.singer_name).substring(0, 1)
@@ -101,7 +113,8 @@ export default {
         map[key].items.push({
           name: item.singer_name,
           imgUrl: item.singer_pic,
-          country: item.country
+          country: item.country,
+          id: item.singer_mid
         })
       })
       let hot = []
@@ -142,7 +155,10 @@ export default {
       }
       this.scrollY = -this.listHeight[index] - Math.random() / 1000000000
       this.$refs.scroll.scrollToElement(this.$refs.titleList[index])
-    }
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   },
   watch: {
     singerList () {
@@ -161,10 +177,27 @@ export default {
         let height2 = listHeight[i + 1]
         if (-newY >= height1 && -newY < height2) {
           this.currentIndex = i
+          this.diff = height2 + newY
           return
         }
       }
       this.currentIndex = listHeight.length - 2
+    },
+    diff (newDiff) {
+      let fixedTop = (newDiff > 0 && newDiff < DIFF) ? newDiff - DIFF : 0
+      if (this.fixedTop === fixedTop) {
+        return
+      }
+      this.fixedTop = fixedTop
+      this.$refs.diffFixed.style.transform = `translate3d(0,${fixedTop}px,0)`
+    }
+  },
+  computed: {
+    fixedTitle () {
+      if (this.scrollY > 0) {
+        return ''
+      }
+      return this.singerList[this.currentIndex] ? this.singerList[this.currentIndex].title : ''
     }
   },
   components: {
@@ -176,9 +209,9 @@ export default {
 
 <style>
 .singer {
-  height: 15.025rem;
+  height: 15.525rem;
   overflow: hidden;
-  padding-top: 0.5rem;
+  padding-top: 0rem;
   background-color: #000;
   position: relative;
 }
@@ -188,14 +221,17 @@ export default {
   color: #fff;
 }
 .singer-title {
-  padding: 0.3rem 0.15rem 0.3rem 0.6rem;
+  height: 1rem;
+  padding: 0rem 0.15rem 0rem 0.6rem;
+  line-height: 1rem;
   font-size: 0.4rem;
   color: #ccc;
   background-color: rgb(29, 28, 28);
 }
 .singer-box {
   display: flex;
-  padding: 0.3rem 0 0.3rem 0.8rem;
+  padding: 0rem 0 0rem 0.8rem;
+  height: 2.1rem;
   color: #999;
   font-size: 0.5rem;
   align-items: center;
@@ -225,5 +261,17 @@ export default {
 }
 .current {
   color: #ffcd32;
+}
+.singer-title-fixed {
+  width: 100%;
+  height: 1rem;
+  line-height: 1rem;
+  position: absolute;
+  top: 0;
+  padding: 0rem 0.15rem 0rem 0.6rem;
+  font-size: 0.4rem;
+  color: #ccc;
+  background-color: rgb(29, 28, 28);
+  /* background-color: #fff; */
 }
 </style>
