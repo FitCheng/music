@@ -1,6 +1,9 @@
 <template>
   <transition name='slider'>
-    <div class="Detail">1</div>
+    <div class="detail">
+      <music-list :singerDetail="singerDetail" :title="title" :imgUrl="imgUrl">
+      </music-list>
+    </div>
   </transition>
 </template>
 
@@ -8,8 +11,17 @@
 import { mapGetters } from 'vuex'
 import { getSingerDetail } from 'api/api.js'
 import { ERR_OK } from 'api/config'
+import { createSong } from 'api/song.js'
+import musicList from 'base/scroll/music-list'
 export default {
   name: 'singerDetail',
+  data () {
+    return {
+      singerDetail: [],
+      imgUrl: '',
+      title: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'singer'
@@ -26,16 +38,31 @@ export default {
       }
       getSingerDetail(this.singer.id).then(res => {
         if (res.code === ERR_OK) {
-          console.log(res.data.list)
+          this.singerDetail = this._normalizeSongs(res.data.list)
+          this.imgUrl = 'https://y.gtimg.cn/music/photo_new/T001R300x300M000' + this.singer.id + '.jpg'
+          this.title = this.singer.name
         }
       })
+    },
+    _normalizeSongs (list) {
+      let ret = []
+      list.forEach((item, index) => {
+        let { musicData } = item
+        if (musicData.songid && musicData.albummid) {
+          ret.push(createSong(musicData))
+        }
+      })
+      return ret
     }
+  },
+  components: {
+    musicList
   }
 }
 </script>
 
 <style>
-.Detail {
+.detail {
   position: fixed;
   z-index: 100;
   top: 0;
