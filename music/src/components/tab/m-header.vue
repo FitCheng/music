@@ -15,7 +15,7 @@ export default {
 <style>
 .header {
   height: 1.273rem;
-  background-color: #000;
+  background-color: #be9108;
   /* text-align: center; */
   /* border-bottom: 1px solid #d4a106; */
 }

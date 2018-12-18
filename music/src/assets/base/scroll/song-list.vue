@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="song" v-for="item in singerDetail" :key="item.id">
+    <div class="song" @click="setSongList(item,index)" v-for="(item,index) in singerDetail" :key="item.id">
       <div class="content">
         <h2 class="name">{{item.name}}</h2>
         <p class="desc">{{getDesc(item)}}</p>
@@ -20,6 +20,9 @@ export default {
   methods: {
     getDesc (song) {
       return `${song.singer}·${song.album}`
+    },
+    setSongList (item, index) {
+      this.$emit('select', item, index)
     }
   }
 }

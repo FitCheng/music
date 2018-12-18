@@ -10,7 +10,7 @@
     </div>
     <scroll @scroll="scroll" :listenScroll="listenScroll" :probeType="probeType" :data="singerDetail" class="scroll">
       <div class="song-list-wrapper">
-        <song-list :singerDetail="singerDetail"></song-list>
+        <song-list @select="select" :singerDetail="singerDetail"></song-list>
       </div>
     </scroll>
   </div>
@@ -19,6 +19,7 @@
 <script>
 import songList from './song-list'
 import scroll from './scroll'
+import { mapActions } from 'vuex'
 export default {
   name: 'musicList',
   data () {
@@ -49,7 +50,16 @@ export default {
     },
     back () {
       this.$router.back()
-    }
+    },
+    select (item, index) {
+      this.selectPlay({
+        list: this.singerDetail,
+        index
+      })
+    },
+    ...mapActions([
+      'selectPlay'
+    ])
   },
   computed: {
     bgStyle () {
@@ -58,9 +68,7 @@ export default {
   },
   watch: {
     scrollY (newY) {
-      console.log(newY)
       if (newY > 0) {
-        console.log(newY)
         let heght = newY / this.$refs.bgImge.offsetHeight
         let scale = 1 + heght
         this.$refs.bgImge.style['transform'] = `scale(${scale})`
