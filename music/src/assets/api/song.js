@@ -21,7 +21,10 @@ export function createSong (musicData) {
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${
       musicData.albummid
     }.jpg?max_age=2592000`,
-    url: `https://y.qq.com/n/yqq/song/${musicData.strMediaMid}.html`
+    // url: `https://y.qq.com/n/yqq/song/${musicData.strMediaMid}.html`
+    url: `https://api.bzqll.com/music/tencent/url?key=579621905&id=${
+      musicData.songmid
+    }&br=320`
   })
 }
 

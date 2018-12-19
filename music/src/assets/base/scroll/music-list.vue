@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="music-list">
     <div class="back" @click="back">
       <img src="../image/back.png" alt="">
     </div>
@@ -84,6 +84,9 @@ export default {
 </script>
 
 <style>
+.music-list {
+  background-color: #000;
+}
 .scroll {
   width: 100%;
   height: 10.78rem;
@@ -103,7 +106,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.3);
   z-index: 100;
 }
 .bgImge-title {
@@ -120,5 +123,8 @@ export default {
   top: 0.25rem;
   left: 0.2rem;
   z-index: 110;
+}
+.back img {
+  width: 0.8rem;
 }
 </style>

@@ -28,7 +28,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .content {
   padding: 0.3rem 0 0.4rem 0.8rem;
 }
@@ -38,6 +38,10 @@ export default {
 }
 .content .desc {
   color: #666;
+  padding: 0.15rem 0 0.15rem 0;
   font-size: 0.4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
