@@ -50,18 +50,22 @@ export default {
 <style>
 .hot-scroll {
   overflow: hidden;
-  height: 9.63rem;
-  background-color: black;
+  height: 53vh;
+  /* height: 0;
+  padding-bottom: 100%; */
+  background-color: #333;
   padding-top: 0.5rem;
   position: relative;
 }
 .hot-h1 {
   width: 100%;
+  height: 3vh;
   text-align: center;
   font-size: 0.41rem;
-  padding: 0.5rem 0 0.5rem 0;
-  color: #ffcd32;
-  background-color: black;
+  padding: 2vh 0 2vh 0;
+  line-height: 3vh;
+  color: #ccc;
+  background-color: #333;
 }
 .hotList {
   display: flex;

@@ -17,24 +17,29 @@
             <img class="normal-middle-cd1" :src="currentSong.image" alt="" ref="normalCd">
           </div>
         </div>
+        <div class="progress-bar">
+          <span class="time-l">{{changeTime(currentTime)}}</span>
+          <div class="progress">
+            <progress-bar :percent="percent" @changeProgress="changeProgress"></progress-bar>
+          </div>
+          <span class="time-r">{{changeTime(currentSong.duration)}}</span>
+        </div>
         <div class="normal-bottom">
           <div class="normal-bottom-icon">
-            <div><img class="normal-bottom-icon1" src="../../assets/base/image/play1.png" alt=""></div>
-            <div><img @click="lastSong" class="normal-bottom-icon1" src="../../assets/base/image/play3.png" alt=""></div>
-            <div>
-              <img @click="songPlay" v-show="!playing" class="normal-bottom-icon3" src="../../assets/base/image/play5.png" alt="">
-              <img @click="songPause" v-show="playing" class="normal-bottom-icon3" src="../../assets/base/image/play4.png" alt="">
+            <div><span class="iconfont">&#xe672;</span></div>
+            <div><span @click="lastSong" class="iconfont">&#xe615;</span></div>
+            <div class="normal-bottom-icon3">
+              <span @click="songPlay" :class="Play"></span>
             </div>
-            <div><img @click="nextSong" class="normal-bottom-icon1" src="../../assets/base/image/play6.png" alt=""></div>
+            <div><span @click="nextSong" class="iconfont">&#xe614;</span></div>
             <div>
-              <img @click="collection" class="normal-bottom-icon1" src="../../assets/base/image/play7.png" alt="">
-              <!-- <img @click="unCollection" class="normal-bottom-icon1" src="../../assets/base/image/play8.png" alt=""> -->
+              <span @click="collection" class="iconfont">&#xe6a7;</span>
             </div>
           </div>
         </div>
       </div>
     </transition>
-    <audio :src="currentSong.url" ref="video"></audio>
+    <audio :src="currentSong.url" ref="video" autoplay @timeupdate="updateTime" muted></audio>
     <div class="mini-player" v-show="miniChange">
       <div class="mini-icon">
         <div class="mini-icon-box">
@@ -45,9 +50,10 @@
           <p class="mini-name">{{currentSong.singer}}</p>
         </div>
         <div class="mini-music-box">
-          <img @click="songPlay" v-show="!playing" class="mini-music-img1" src="../../assets/base/image/play5.png" alt="">
-          <img @click="songPause" v-show="playing" class="mini-music-img1" src="../../assets/base/image/play4.png" alt="">
-          <img @click="closeMini" class="mini-music-img2" src="../../assets/base/image/music.png" alt="">
+          <div class="mini-music-img1"><span @click="songPlay" :class="Play"></span></div>
+          <div class="mini-music-img2">
+            <span @click="closeMini" class="iconfont">&#xe674;</span>
+          </div>
         </div>
       </div>
     </div>
@@ -56,13 +62,24 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import progressBar from '../../assets/base/progress-Bar/progress-Bar'
 export default {
   name: 'Player',
   data () {
     return {
+      index: 1,
+      currentTime: 0,
+      allTime: 0
+      // Play: ''
     }
   },
   computed: {
+    Play () {
+      return this.playing ? 'iconfont icon-zanting' : 'iconfont icon-bofang'
+    },
+    percent () {
+      return this.currentTime / this.currentSong.duration
+    },
     ...mapGetters([
       'playlist',
       'fullScreen',
@@ -72,10 +89,24 @@ export default {
       'currentIndex'
     ]),
     miniChange () {
+      // this.Play = this.playing ? 'iconfont icon-bofang' : 'iconfont icon-zanting'
       return this.miniScreen && (!this.fullScreen)
     }
   },
+  watch: {
+    playing (newplaying) {
+      const video = this.$refs.video
+      this.$nextTick(() => {
+        newplaying ? video.play() : video.pause()
+        this.$refs.normalCd.className = this.playing ? 'normal-middle-cd2  ' : 'normal-middle-cd1'
+        this.$refs.miniCd.className = this.playing ? 'mini-cd2' : 'mini-cd1'
+      })
+    }
+  },
   methods: {
+    updateTime (e) {
+      this.currentTime = e.target.currentTime
+    },
     close () {
       this.setFullScreen(false)
     },
@@ -84,41 +115,66 @@ export default {
     },
     closeMini () {
       this.setMiniScreen(false)
-      this.$refs.video.pause()
-      this.setPlaying(false)
-      this.$refs.normalCd.className = 'normal-middle-cd1'
-      this.$refs.miniCd.className = 'mini-cd1'
+      this.setPlayingState(false)
     },
     songPlay () {
-      this.$refs.video.play()
-      this.setPlaying(true)
-      this.$refs.normalCd.className = 'normal-middle-cd2'
-      this.$refs.miniCd.className = 'mini-cd2'
-    },
-    songPause () {
-      this.$refs.video.pause()
-      this.setPlaying(false)
-      this.$refs.normalCd.className = 'normal-middle-cd1'
-      this.$refs.miniCd.className = 'mini-cd1'
+      this.setPlayingState(!this.playing)
     },
     lastSong () {
+      let max = this.playlist.length - 1
       if (this.currentIndex === 0) {
-        return this.setCurrentIndex(0)
+        this.setCurrentIndex(max + 1)
       }
       this.setCurrentIndex(this.currentIndex - 1)
+      if (!this.playing) {
+        this.songPlay()
+      }
+      if (this.playing) {
+        this.setPlayingState(true)
+      }
     },
     nextSong () {
+      let max = this.playlist.length - 1
+      if (this.currentIndex === max) {
+        this.setCurrentIndex(-1)
+      }
       this.setCurrentIndex(this.currentIndex + 1)
+      if (!this.playing) {
+        this.songPlay()
+      }
     },
+    // 时间换算
+    changeTime (time) {
+      time = time | 0
+      let min = time / 60 | 0
+      let sec = this._pad(time % 60)
+      return `${min}:${sec}`
+    },
+    // 补零函数
+    _pad (num, n = 2) {
+      let len = num.toString().length
+      if (len < n) {
+        num = '0' + num
+        len++
+      }
+      return num
+    },
+    changeProgress (pre) {
+      this.$refs.video.currentTime = this.currentSong.duration * pre
+    },
+    /* 收藏歌曲 */
     collection () {
 
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
       setMiniScreen: 'SET_MINI_SCREEN',
-      setPlaying: 'SET_PLAYING_STATE',
+      setPlayingState: 'SET_PLAYING_STATE',
       setCurrentIndex: 'SET_CURRENT_INDEX'
     })
+  },
+  components: {
+    progressBar
   }
 
 }
@@ -163,8 +219,7 @@ export default {
 }
 .normal-top {
   width: 100%;
-  height: 0;
-  padding-bottom: 25%;
+  height: 15vh;
 }
 .normal-top-icon {
   position: absolute;
@@ -189,8 +244,7 @@ export default {
 .normal-middle {
   position: relative;
   width: 100%;
-  height: 0;
-  padding-bottom: 100%;
+  height: 55vh;
   display: flex;
   justify-content: center;
 }
@@ -210,22 +264,38 @@ export default {
   border-radius: 50%;
   animation: rotate 20s linear infinite;
 }
+/*进度条*/
+.progress-bar {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+}
+.time-l {
+  margin-left: 1rem;
+  margin-right: 0.1rem;
+}
+.time-r {
+  margin-left: 0.1rem;
+  margin-right: 1rem;
+}
+.progress {
+  height: 0.15rem;
+  flex: 1;
+  background-color: #444;
+  border-radius: 0.5rem;
+}
 .normal-bottom {
   width: 100%;
-  height: 0;
-  padding-bottom: 57.8%;
+  height: 30vh;
 }
 .normal-bottom-icon {
-  margin-top: 3.2rem;
+  margin-top: 1rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
-.normal-bottom-icon .normal-bottom-icon3 {
-  width: 1.2rem;
-}
-.normal-bottom-icon .normal-bottom-icon1 {
-  width: 1rem;
+.normal-bottom-icon3 span {
+  font-size: 90px;
 }
 .player .mini-player {
   position: fixed;
@@ -276,14 +346,18 @@ export default {
   justify-content: flex-end;
 }
 .mini-music-img2 {
-  width: 1.4rem;
-  height: 1.4rem;
   margin-right: 0.2rem;
+  align-items: center;
+  flex: 1;
+  display: flex;
+}
+.mini-music-img2 span {
+  font-size: 98px;
 }
 .mini-music-img1 {
-  padding-top: 0.3rem;
-  width: 0.9rem;
-  height: 0.9rem;
+  display: flex;
+  align-items: center;
   margin-right: 0.2rem;
+  flex: 1;
 }
 </style>

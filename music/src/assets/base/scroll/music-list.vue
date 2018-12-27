@@ -71,7 +71,9 @@ export default {
       if (newY > 0) {
         let heght = newY / this.$refs.bgImge.offsetHeight
         let scale = 1 + heght
-        this.$refs.bgImge.style['transform'] = `scale(${scale})`
+        if (scale > 0.02) {
+          this.$refs.bgImge.style['transform'] = `scale(${scale})`
+        }
       }
     }
   },

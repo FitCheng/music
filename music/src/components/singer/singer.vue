@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="scroll-box">
     <scroll ref="scroll" class="singer" :data="singerList" @scroll='scroll' :listenScroll="listenScroll" :probeType="probeType">
       <div>
         <div v-for="item in singerList" :key="item.id" ref="titleList">
@@ -209,7 +209,7 @@ export default {
 
 <style>
 .singer {
-  height: 15.525rem;
+  height: 88vh;
   overflow: hidden;
   padding-top: 0rem;
   background-color: #000;

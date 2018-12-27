@@ -46,8 +46,8 @@ export default {
 
 <style>
 .swiper-img {
-  width: 100%;
-  height: 40%;
+  width: 100vw;
+  height: 25vh;
 }
 .swiper-container-horizontal
   > .swiper-pagination-bullets

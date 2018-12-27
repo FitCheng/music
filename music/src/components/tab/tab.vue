@@ -24,19 +24,20 @@ export default {}
 <style>
 .tab {
   display: flex;
-  background-color: #000;
+  height: 5.5vh;
+  background-color: #333;
 }
 .tab-item {
   flex: 1;
   text-align: center;
-  height: 0.916rem;
+  /* height: 0.916rem; */
   font-size: 0.437rem;
   line-height: 1rem;
-  color: #aaa;
-  border-bottom: 0.054rem solid #000;
+  color: #666;
+  border-bottom: 0.054rem solid #333;
 }
 .router-link-active {
-  color: #ffcd32;
-  border-bottom: 0.054rem solid #ffcd32;
+  color: #ccc;
+  border-bottom: 0.054rem solid #ccc;
 }
 </style>

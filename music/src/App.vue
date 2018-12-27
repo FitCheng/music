@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @touchmove.prevent>
     <m-header></m-header>
     <tab></tab>
     <router-view />
@@ -23,6 +23,6 @@ export default {
 
 <style>
 #app {
-  background-color: black;
+  background-color: #333;
 }
 </style>
